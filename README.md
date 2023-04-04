@@ -22,12 +22,14 @@ $env:PATH += ";${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\
 
 ## Build for x64
 
+**Note:** VCPKG manifest mode doesn't work if build path includes a backslash.  So don't use something like "build_x64"!
+
 ```PowerShell
-cmake.exe -B build\x64 -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake'
+cmake.exe -B build_x64 -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake'
 
-cmake.exe --build build\x64 --parallel --config Debug
+cmake.exe --build build_x64 --parallel --config Debug
 
-build\x64\Debug\helloworld.exe
+build_x64\Debug\helloworld.exe
 ```
 
 ## Cross compile for ARM
@@ -35,11 +37,9 @@ build\x64\Debug\helloworld.exe
 Specify platform name using `-A ARM64`. Could also use `CMAKE_GENERATOR_PLATFORM` or `CMAKE_VS_PLATFORM_NAME`
 
 ```PowerShell
-cmake.exe -B build\ARM64 -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake' -A ARM64
+cmake.exe -B build_ARM64 -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake' -A ARM64
 
-cmake.exe --build build\ARM64 --parallel --config Debug
-
-build\ARM64\Debug\helloworld.exe
+cmake.exe --build build_ARM64 --parallel --config Debug
 ```
 
 ## Check EXE with dumpbin
@@ -47,7 +47,7 @@ build\ARM64\Debug\helloworld.exe
 ```PowerShell
 $dumpbin = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\dumpbin.exe"
 
-& $dumpbin /HEADERS build\ARM64\Debug\helloworld.exe | Select-String 'machine' -SimpleMatch
+& $dumpbin /HEADERS build_ARM64\Debug\helloworld.exe | Select-String 'machine' -SimpleMatch
 ```
 
 ## References
