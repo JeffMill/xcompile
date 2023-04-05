@@ -1,18 +1,18 @@
-# Visual Studio Build Tools Cross-Compile
+# Visual Studio Build Tools ARM
+
+Compilation and cross-compilation.
 
 ## Install Visual Studio Build Tools
 
-See the [Component Directory](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
-
-This includes cmake.
-
-Need to explicitly specify ARM64 build tools - Microsoft.VisualStudio.Component.VC.Tools.ARM64.
+If installed onto an ARM device, this will include ARM64 build tools as well as x86 and x64. If you're installing onto an x64 device, you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [note 1]) to enable cross-compilation targeting ARM64.
 
 ```PowerShell
 Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile "$env:TEMP/vs_BuildTools.exe"
 
-& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.ARM64
+& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended [--add Microsoft.VisualStudio.Component.VC.Tools.ARM64]
 ```
+
+**Note 1:** See the [Component Directory](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022)
 
 ## Add CMake to PATH
 
