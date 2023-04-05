@@ -1,4 +1,4 @@
-# Visual Studio Build - ARM
+# Visual Studio / VCPKG Build - ARM
 
 Compilation and cross-compilation.
 
@@ -16,6 +16,16 @@ When installing onto an ARM device, this will include ARM64 build tools as well 
 
 ```PowerShell
 & "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended
+```
+
+# Install VCPKG
+
+Install to `\vcpkg` for convenience.
+
+```PowerShell
+git clone https://github.com/Microsoft/vcpkg.git /vcpkg
+
+\vcpkg\bootstrap-vcpkg.bat
 ```
 
 **Cross-Compile (on x64 device):**
