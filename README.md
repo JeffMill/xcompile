@@ -10,17 +10,7 @@ Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile
 
 ## Install Visual Studio Build Tools
 
-**Native (on ARM device):**
-
-When installing onto an ARM device, this will include ARM64 build tools as well as x86 and x64 [^1].
-
-```PowerShell
-& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended
-```
-
-**Cross-Compile (on x64 device):**
-
-When installing onto an x64 device, you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [^2]) to enable cross-compilation targeting ARM64.
+When installing onto an ARM device, this will include ARM64 build tools as well as x86 and x64 [^1]. Note that you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [^2]) to enable cross-compilation targeting ARM64.
 
 ```PowerShell
 & "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.ARM64
