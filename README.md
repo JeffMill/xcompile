@@ -1,15 +1,29 @@
-# Visual Studio Build Tools ARM
+# Visual Studio Build - ARM
 
 Compilation and cross-compilation.
 
-## Install Visual Studio Build Tools
-
-If installed onto an ARM device, this will include ARM64 build tools as well as x86 and x64 [^1]. If you're installing onto an x64 device, you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [^2]) to enable cross-compilation targeting ARM64.
+## Download Visual Studio Build Tools
 
 ```PowerShell
 Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile "$env:TEMP/vs_BuildTools.exe"
+```
 
-& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended [--add Microsoft.VisualStudio.Component.VC.Tools.ARM64]
+## Install Visual Studio Build Tools
+
+**Native (on ARM device):**
+
+When installing onto an ARM device, this will include ARM64 build tools as well as x86 and x64 [^1].
+
+```PowerShell
+& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended
+```
+
+**Cross-Compile (on x64 device):**
+
+When installing onto an x64 device, you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [^2]) to enable cross-compilation targeting ARM64.
+
+```PowerShell
+& "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --add Microsoft.VisualStudio.Component.VC.Tools.ARM64
 ```
 
 [^1]: See [Visual Studio on Arm-powered devices
@@ -19,23 +33,24 @@ Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vs_BuildTools.exe' -OutFile
 
 ## Add CMake to PATH
 
+Visual Studio Build Tools includes cmake, but it's not put into the PATH.
+
 ```PowerShell
 $env:PATH += ";${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin"
 ```
-
-## Build for x64
-
-**Note:** VCPKG manifest mode doesn't work if build path includes a backslash.  So don't use something like "build_x64"!
+## Build natively (x64 on x64, ARM on arm)
 
 ```PowerShell
-cmake.exe -B build_x64 -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake'
+cmake.exe -B build -S . -D CMAKE_TOOLCHAIN_FILE='/vcpkg/scripts/buildsystems/vcpkg.cmake'
 
-cmake.exe --build build_x64 --parallel --config Debug
+cmake.exe --build build --parallel --config Debug
 
-build_x64\Debug\helloworld.exe
+build\Debug\helloworld.exe
 ```
 
-## Cross compile for ARM
+## Cross compile for ARM (on x64 device)
+
+**Important:** VCPKG manifest mode doesn't work if build path includes a backslash.  So don't use something like `-B build\ARM64`!
 
 Specify platform name using `-A ARM64`. Could also use `CMAKE_GENERATOR_PLATFORM` or `CMAKE_VS_PLATFORM_NAME`
 
@@ -47,9 +62,23 @@ cmake.exe --build build_ARM64 --parallel --config Debug
 
 ## Check EXE with dumpbin
 
+### Add dumpbin to PATH
+
+**On ARM device:**
+
+```PowerShell
+$dumpbin = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.35.32215\bin\Hostarm64\x64\dumpbin.exe"
+```
+
+**On x64 device:**
+
 ```PowerShell
 $dumpbin = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.35.32215\bin\Hostx64\x64\dumpbin.exe"
+```
 
+### Check "machine" type
+
+```PowerShell
 & $dumpbin /HEADERS build_ARM64\Debug\helloworld.exe | Select-String 'machine' -SimpleMatch
 ```
 
