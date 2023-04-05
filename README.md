@@ -18,16 +18,6 @@ When installing onto an ARM device, this will include ARM64 build tools as well 
 & "$env:TEMP/vs_BuildTools.exe" --passive --wait --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended
 ```
 
-# Install VCPKG
-
-Install to `\vcpkg` for convenience.
-
-```PowerShell
-git clone https://github.com/Microsoft/vcpkg.git /vcpkg
-
-\vcpkg\bootstrap-vcpkg.bat
-```
-
 **Cross-Compile (on x64 device):**
 
 When installing onto an x64 device, you'll need to explicitly specify ARM64 build tools ("Microsoft.VisualStudio.Component.VC.Tools.ARM64" [^2]) to enable cross-compilation targeting ARM64.
@@ -48,6 +38,17 @@ Visual Studio Build Tools includes cmake, but it's not put into the PATH.
 ```PowerShell
 $env:PATH += ";${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin"
 ```
+
+## Install VCPKG
+
+Install to `\vcpkg` for convenience.
+
+```PowerShell
+git clone https://github.com/Microsoft/vcpkg.git /vcpkg
+
+\vcpkg\bootstrap-vcpkg.bat
+```
+
 ## Build natively (x64 on x64, ARM on arm)
 
 ```PowerShell
